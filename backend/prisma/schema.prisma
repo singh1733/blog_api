@@ -3,14 +3,11 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-generator client {
-    provider = "prisma-client-js"
-}
-
 model User {
     id       Int       @id @default(autoincrement())
     email    String    @unique
     username String    @unique
+    password String
     role     Role      @default(USER)
     posts    Post[]
     comments Comment[]
@@ -19,8 +16,9 @@ model User {
 model Post {
     id        Int       @id @default(autoincrement())
     createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
+    updatedAt DateTime? @updatedAt
     title     String
+    content   String
     published Boolean   @default(false)
     User      User      @relation(fields: [userId], references: [id])
     userId    Int
@@ -28,12 +26,12 @@ model Post {
 }
 
 model Comment {
-    id     Int   @id @default(autoincrement())
+    id      Int    @id @default(autoincrement())
     content String
-    User   User  @relation(fields: [userId], references: [id])
-    userId Int
-    Post   Post @relation(fields: [postId], references: [id])
-    postId Int
+    User    User   @relation(fields: [userId], references: [id])
+    userId  Int
+    Post    Post   @relation(fields: [postId], references: [id])
+    postId  Int
 }
 
 enum Role {
