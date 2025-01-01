@@ -11,6 +11,8 @@ const commentRoute = require("./routes/commentRoute");
 
 app.use("/posts/:postId/comments", commentRoute);
 app.use("/posts", postRoute);
+app.use("/user", postRoute);
+
 
 app.get("/", (req, res) => {
   res.redirect("/posts");

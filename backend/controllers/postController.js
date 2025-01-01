@@ -19,7 +19,14 @@ async function getPostById(req, res) {
       id: req.body.id,
     },
   });
-  res.json(post);
+
+  const comments = await prisma.post.findMany({
+    where: {
+      postId: req.body.id,
+    },
+  });
+
+  res.json({ post, comments });
 }
 
 async function getPostsByUser(req, res) {
