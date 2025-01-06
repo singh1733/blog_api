@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
+app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -11,7 +13,7 @@ const commentRoute = require("./routes/commentRoute");
 
 app.use("/posts/:postId/comments", commentRoute);
 app.use("/posts", postRoute);
-app.use("/user", postRoute);
+app.use("/user", userRoute);
 
 
 app.get("/", (req, res) => {

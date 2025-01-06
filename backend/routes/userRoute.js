@@ -2,7 +2,13 @@ const { Router } = require("express");
 const userRouter = Router();
 const userController = require("../controllers/userController");
 
+userRouter.get("/signup", userController.getUserSignUp);
 userRouter.get("/", userController.getUserByUsername);
-userRouter.post("/", userController.createUser);
+userRouter.post("/signup", userController.createUser);
+userRouter.post("/log-in", userController.postLogIn);
+userRouter.post("/log-out", userController.logOut);
 userRouter.delete("/:userId",userController.deleteUser);
 userRouter.put("/:userId",userController.updateUser);
+
+module.exports=userRouter;
+

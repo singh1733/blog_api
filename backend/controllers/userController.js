@@ -1,5 +1,56 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
+
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          username: username,
+        },
+      });
+
+      if (!user) {
+        return done(null, false, { message: "Incorrect username" });
+      }
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) {
+        return done(null, false, { message: "Incorrect password" });
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  })
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
+function postLogIn(req, res) {
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/",
+  });
+}
 
 async function getAllUsers(req, res) {
   const users = await prisma.user.findMany();
@@ -7,14 +58,16 @@ async function getAllUsers(req, res) {
 }
 
 async function createUser(req, res) {
-  const user = await prisma.user.create({
-    data: {
-      email: req.body.email,
-      username: req.body.username,
-      password: req.body.password,
-    },
+  bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+    const user = await prisma.user.create({
+      data: {
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+      },
+    });
+    res.json(user);
   });
-  res.json(user);
 }
 
 async function getUserByUsername(req, res) {
@@ -49,7 +102,20 @@ async function deleteUser(req, res) {
   res.json(user);
 }
 
+function logOut(req, res) {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+  });
+}
+
+async function getUserSignUp(req, res) {}
+
 module.exports = {
+  logOut,
+  postLogIn,
+  getUserSignUp,
   getAllUsers,
   createUser,
   getUserByUsername,

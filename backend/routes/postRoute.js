@@ -9,5 +9,5 @@ postRouter.get("/:postId", postController.getPostById);
 postRouter.put("/:postId", postController.updatePost);
 postRouter.delete("/:postId", postController.deletePost);
 
-
+module.exports=postRouter;
 
