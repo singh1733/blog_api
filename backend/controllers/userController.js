@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+require("dotenv").config;
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -45,12 +47,20 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
+function getLogIn(req, res) {}
+
 function postLogIn(req, res) {
   passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/",
   });
+  const username = req.body.username;
+  const user = { name: username, role: user.role };
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+  res.json({ accessToken: accessToken });
 }
+
+
 
 async function getAllUsers(req, res) {
   const users = await prisma.user.findMany();
@@ -113,6 +123,7 @@ function logOut(req, res) {
 async function getUserSignUp(req, res) {}
 
 module.exports = {
+  getLogIn,
   logOut,
   postLogIn,
   getUserSignUp,
