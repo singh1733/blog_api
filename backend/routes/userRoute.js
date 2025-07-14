@@ -10,6 +10,9 @@ userRouter.get("/log-in", userController.getLogIn);
 userRouter.post("/log-out", userController.logOut);
 userRouter.delete("/:userId",userController.deleteUser);
 userRouter.put("/:userId",userController.updateUser);
+postRouter.post('/', authenticateToken, postController.createPost);
+postRouter.put('/:postId', authenticateToken, postController.updatePost);
+postRouter.delete('/:postId', authenticateToken, postController.isAdmin, postController.deletePost);
 
 module.exports=userRouter;
 

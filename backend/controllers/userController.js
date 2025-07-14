@@ -6,61 +6,63 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config;
 
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
-    try {
-      const user = await prisma.user.findUnique({
-        where: {
-          username: username,
-        },
-      });
+// passport.use(
+//   new LocalStrategy(async (username, password, done) => {
+//     try {
+//       const user = await prisma.user.findUnique({
+//         where: {
+//           username: username,
+//         },
+//       });
 
-      if (!user) {
-        return done(null, false, { message: "Incorrect username" });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        return done(null, false, { message: "Incorrect password" });
-      }
-      return done(null, user);
-    } catch (err) {
-      return done(err);
-    }
-  })
-);
+//       if (!user) {
+//         return done(null, false, { message: "Incorrect username" });
+//       }
+//       const match = await bcrypt.compare(password, user.password);
+//       if (!match) {
+//         return done(null, false, { message: "Incorrect password" });
+//       }
+//       return done(null, user);
+//     } catch (err) {
+//       return done(err);
+//     }
+//   })
+// );
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-    });
+// passport.deserializeUser(async (id, done) => {
+//   try {
+//     const user = await prisma.user.findUnique({
+//       where: {
+//         id: id,
+//       },
+//     });
 
-    done(null, user);
-  } catch (err) {
-    done(err);
-  }
-});
+//     done(null, user);
+//   } catch (err) {
+//     done(err);
+//   }
+// });
 
 function getLogIn(req, res) {}
 
-function postLogIn(req, res) {
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/",
-  });
-  const username = req.body.username;
-  const user = { name: username, role: user.role };
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-  res.json({ accessToken: accessToken });
+function postLogIn(req, res, next) {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) return res.status(401).json({ message: info.message });
+
+    const accessToken = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ accessToken });
+  })(req, res, next);
 }
-
-
 
 async function getAllUsers(req, res) {
   const users = await prisma.user.findMany();
