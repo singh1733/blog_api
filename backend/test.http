@@ -1,0 +1,8 @@
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "d.1733@osu.edu",
+  "username": "prab",
+  "password": "123456"
+}

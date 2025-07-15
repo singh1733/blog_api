@@ -41,7 +41,20 @@ async function getPostsByUser(req, res) {
 }
 
 async function updatePost(req, res) {
-  const post = await prisma.post.update({
+  const post = await prisma.post.findUnique({
+    where: { id: parseInt(req.params.id) },
+  });
+
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  // Only the original author or admin can edit
+  if (req.user.id !== post.authorId && req.user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+  
+  const updatedPost = await prisma.post.update({
     where: {
       id: req.body.id,
     },
@@ -51,7 +64,7 @@ async function updatePost(req, res) {
       published: published,
     },
   });
-  res.json(post);
+  res.json(updatedPost);
 }
 
 async function deletePost(req, res) {

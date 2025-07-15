@@ -1,10 +1,13 @@
 const express = require("express");
 const session = require('express-session');
+require('dotenv').config();
 const passport = require('passport');
+require('./passport-config')(passport);
+
 
 const app = express();
 app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
-app.use(passport.session());
+app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -25,7 +28,12 @@ app.get("/", (req, res) => {
   res.redirect("/posts");
 });
 
+app.use('/auth', require('./routes/auth'));
+
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`My first Express app - listening on port ${PORT}!`);
 });
+
+
