@@ -47,6 +47,10 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 });
 
+// Verify token
+router.get('/verify', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.json({ user: req.user });
+});
 
 
 module.exports = router;

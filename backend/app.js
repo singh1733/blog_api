@@ -3,6 +3,8 @@ const session = require('express-session');
 require('dotenv').config();
 const passport = require('passport');
 require('./passport-config')(passport);
+const cors = require('cors');
+
 
 
 const app = express();
@@ -10,9 +12,13 @@ app.use(session({ secret: "cats", resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('../viewPosts'));
+app.use(cors());
+
+
 
 const userRoute = require("./routes/userRoute");
-const postRoute = require("./routes/postRoute");
+const postRoute = require("./routes/postsRoute");
 const commentRoute = require("./routes/commentRoute");
 const authRoute = require("./routes/auth");
 
