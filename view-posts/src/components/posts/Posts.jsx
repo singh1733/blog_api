@@ -1,5 +1,4 @@
 import React from "react";
-import { useOutletContext } from "react-router-dom";
 import  { useEffect, useState } from "react";
 
 const Posts = () => {
@@ -11,6 +10,8 @@ const Posts = () => {
       .then((data) => setPosts(data))
       .catch((err) => console.error("Failed to fetch posts:", err));
   }, []);
+
+  //add an edit and delete feature for admins
 
   return (
     <div>
