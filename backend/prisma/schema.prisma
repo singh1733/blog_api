@@ -28,7 +28,7 @@ model Post {
     userId    Int
     comments  Comment[]
 }
-a
+
 model Comment {
     id      Int    @id @default(autoincrement())
     content String
