@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
-import { UserContext } from "../UserContext";
+import {jwtDecode} from "jwt-decode";
+import  UserContext  from "../userContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {

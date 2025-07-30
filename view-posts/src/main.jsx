@@ -4,11 +4,14 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import jwtDecode from "jwt-decode";
-import Nav from "./components/Nav";
-import Posts from "./pages/Posts";
-import User from "./pages/User";
-import UserContext from "./userContext";
+import { jwtDecode } from "jwt-decode";
+import Nav from "./components/nav/Nav";
+import Posts from "./components/posts/Posts";
+import User from "./components/user/User";
+import Register from "./components/user/Register";
+import Login from "./components/user/Login";
+
+import UserContext from "./components/userContext";
 
 
 export default function Main() {
@@ -35,6 +38,9 @@ export default function Main() {
         { path: "/", element: <Navigate to="/posts" /> },
         { path: "/posts", element: <Posts /> },
         { path: "/user", element: <User /> },
+        { path: "/user/login", element: <Login /> },
+        { path: "/user/register", element: <Register /> },
+
       ],
     },
   ]);
