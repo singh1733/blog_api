@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
-import  UserContext  from "../userContext";
+import UserContext from "../userContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -13,23 +13,19 @@ export default function Login() {
   async function handleLogin(e) {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4000/auth/login", {
-        username,
-        password,
-      });
+      const res = await axios.post(
+        "http://localhost:4000/user/login",
+        {
+          username,
+          password,
+        },
+        { withCredentials: true }
+      );
 
-      const token = res.data.token;
+      console.log("Login response:", res.data);
+      const loggedInUser = res.data.user;
+      setUser(loggedInUser);
 
-      // 1. Save token in localStorage
-      localStorage.setItem("token", token);
-
-      // 2. Decode it to get user info
-      const decodedUser = jwtDecode(token);
-
-      // 3. Save user info to context
-      setUser(decodedUser);
-
-      // 4. Navigate to homepage or dashboard
       navigate("/");
     } catch (err) {
       console.error("Login failed", err);
@@ -38,20 +34,25 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <input
-        type="text"
-        placeholder="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Log In</button>
-    </form>
+    <div>
+      <form onSubmit={handleLogin}>
+        <input
+          type="text"
+          placeholder="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Log In</button>
+      </form>
+      <p>
+        Don't have an account? <Link to="/user/register">Register</Link>
+      </p>
+    </div>
   );
 }

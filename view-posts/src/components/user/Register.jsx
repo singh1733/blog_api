@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -19,7 +22,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:500/api/auth.register", {
+      const res = await fetch("http://localhost:4000/user/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,6 +32,7 @@ const Register = () => {
       const data = await res.json();
       if (res.ok) {
         setMessage("Registration successful! Please log in.");
+        navigate("/user/login");
         setFormData({ username: "", email: "", password: "" }); // Reset form
       } else {
         setMessage(`${data.error || "Registration failed. Please try again."}`);

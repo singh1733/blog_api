@@ -3,7 +3,6 @@ const prisma = new PrismaClient();
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 function postLogIn(req, res, next) {
@@ -28,8 +27,9 @@ async function createUser(req, res) {
   try {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { username } });
-    if (existingUser) {
-      return res.status(400).json({ error: "Username already taken" });
+    const existingEmail = await prisma.user.findUnique({ where: { email } });
+    if (existingUser||existingEmail) {
+      return res.status(400).json({ error: "Username or Email already taken" });
     }
 
     // Hash password
@@ -60,13 +60,17 @@ async function getUserByUsername(req, res) {
       username: req.params.username,
     },
   });
-  res.json(user);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  const { password, ...safeUser } = user; //do not return password in response
+  res.json(safeUser); 
 }
 
 async function updateUser(req, res) {
   const user = await prisma.user.update({
     where: {
-      id: req.body.id,
+      username: req.param.username,
     },
     data: {
       email: req.body.email,
@@ -79,7 +83,7 @@ async function updateUser(req, res) {
 
 async function deleteUser(req, res) {
   const user = await prisma.user.delete({
-    where: { id: req.body.id },
+    where: { username: req.param.username },
   });
   res.json(user);
 }
@@ -90,11 +94,6 @@ function postLogOut(req, res) {
     res.clearCookie("connect.sid");
     res.json({ message: "Logged out" });
   });
-}
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.status(401).json({ message: "Unauthorized" });
 }
 
 module.exports = {

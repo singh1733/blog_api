@@ -1,18 +1,17 @@
 const { Router } = require("express");
 const userRouter = Router();
 const userController = require("../controllers/userController");
+const { ensureAuthenticated } = require("../middleware/authMiddleware");
 
-userRouter.get("/signup", userController.getUserSignUp);
-userRouter.get("/", userController.getUserByUsername);
-userRouter.post("/signup", userController.createUser);
-userRouter.post("/log-in", userController.postLogIn);
-userRouter.get("/log-in", userController.getLogIn);
-userRouter.post("/log-out", userController.logOut);
-userRouter.delete("/:userId",userController.deleteUser);
-userRouter.put("/:userId",userController.updateUser);
-//postRouter.post('/', authenticateToken, postController.createPost);
-//postRouter.put('/:postId', authenticateToken, postController.updatePost);
-//postRouter.delete('/:postId', authenticateToken, postController.isAdmin, postController.deletePost);
+
+//userRouter.get("/register", userController.getUserSignUp);
+userRouter.get("/:username",ensureAuthenticated, userController.getUserByUsername);
+userRouter.post("/register", userController.createUser);
+userRouter.post("/login", userController.postLogIn);
+//userRouter.get("/log-in", userController.getLogIn);
+userRouter.post("/logout", userController.postLogOut);
+userRouter.delete("/:username",ensureAuthenticated,userController.deleteUser);
+userRouter.put("/:username",ensureAuthenticated,userController.updateUser);
 
 module.exports=userRouter;
 

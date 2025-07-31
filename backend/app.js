@@ -3,6 +3,7 @@ const session = require("express-session");
 require("dotenv").config();
 const passport = require("passport");
 require("./passport-config")(passport);
+
 const cors = require("cors");
 
 const app = express();
@@ -17,30 +18,26 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("../viewPosts"));
-app.use(cors());
-
+app.use(cors({
+  origin: "http://localhost:5173", //  match  frontend exactly
+  credentials: true,               
+}));
 const userRoute = require("./routes/userRoute");
 const postRoute = require("./routes/postsRoute");
 const commentRoute = require("./routes/commentRoute");
-const authRoute = require("./routes/auth");
 
 //render home page
 
 app.use("/posts/:postId/comments", commentRoute);
 app.use("/posts", postRoute);
 app.use("/user", userRoute);
-app.use("/auth", authRoute); // adjust path as needed
 
-app.get("/", (req, res) => {
-  res.redirect("/posts");
-});
 
-app.use("/auth", require("./routes/auth"));
-
-const PORT = 3000;
+const PORT = 4000;
 app.listen(PORT, () => {
   console.log(`My first Express app - listening on port ${PORT}!`);
 });

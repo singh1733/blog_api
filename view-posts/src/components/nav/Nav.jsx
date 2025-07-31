@@ -15,7 +15,7 @@ const Nav = () => {
           </li>
           <li>
             {user ? (
-              <Link to={`/user/${user.id}`}>{user.username}</Link>
+              <Link to={`/user/${user.username}`}>{user.username}</Link>
             ) : (
               <Link to="/user/login">Log In</Link>
             )}
