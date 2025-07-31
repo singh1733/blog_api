@@ -4,88 +4,60 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require("dotenv").config;
-
-// passport.use(
-//   new LocalStrategy(async (username, password, done) => {
-//     try {
-//       const user = await prisma.user.findUnique({
-//         where: {
-//           username: username,
-//         },
-//       });
-
-//       if (!user) {
-//         return done(null, false, { message: "Incorrect username" });
-//       }
-//       const match = await bcrypt.compare(password, user.password);
-//       if (!match) {
-//         return done(null, false, { message: "Incorrect password" });
-//       }
-//       return done(null, user);
-//     } catch (err) {
-//       return done(err);
-//     }
-//   })
-// );
-
-// passport.serializeUser((user, done) => {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser(async (id, done) => {
-//   try {
-//     const user = await prisma.user.findUnique({
-//       where: {
-//         id: id,
-//       },
-//     });
-
-//     done(null, user);
-//   } catch (err) {
-//     done(err);
-//   }
-// });
-
-function getLogIn(req, res) {}
+require("dotenv").config();
 
 function postLogIn(req, res, next) {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) return next(err);
-    if (!user) return res.status(401).json({ message: info.message });
+  passport.authenticate("local", { session: true }, (err, user, info) => {
+    if (err || !user) {
+      return res.status(400).json({ message: "Login failed" });
+    }
 
-    const accessToken = jwt.sign(
-      { id: user.id, username: user.username, role: user.role },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.json({ accessToken });
+    req.login(user, (err) => {
+      if (err) return next(err);
+      return res.json({
+        message: "Logged in successfully",
+        user: { id: user.id, username: user.username },
+      });
+    });
   })(req, res, next);
 }
 
-async function getAllUsers(req, res) {
-  const users = await prisma.user.findMany();
-  res.json(users);
-}
-
 async function createUser(req, res) {
-  bcrypt.hash(req.body.password, 10, async (err, hashedPassword) => {
+  const { email, username, password } = req.body;
+
+  try {
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({ where: { username } });
+    if (existingUser) {
+      return res.status(400).json({ error: "Username already taken" });
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Save user to DB
     const user = await prisma.user.create({
       data: {
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
+        email: email,
+        username: username,
+        password: hashedPassword,
       },
     });
-    res.json(user);
-  });
+
+    res.status(201).json({
+      message: "User created successfully",
+      user: { id: user.id, username: user.username },
+    });
+  } catch (err) {
+    console.error("Error during registration:", err);
+    res.status(500).json({ error: "Registration failed" });
+  }
 }
 
 async function getUserByUsername(req, res) {
   const user = await prisma.user.findUnique({
     where: {
-      username: req.body.username,
+      username: req.params.username,
     },
   });
   res.json(user);
@@ -99,37 +71,35 @@ async function updateUser(req, res) {
     data: {
       email: req.body.email,
       username: req.body.username,
-      password: req.body.password,
+      password: await bcrypt.hash(req.body.password, 10),
     },
   });
   res.json(user);
 }
 
 async function deleteUser(req, res) {
-  const user = await prisma.user.update({
-    where: {
-      id: req.body.id,
-    },
+  const user = await prisma.user.delete({
+    where: { id: req.body.id },
   });
   res.json(user);
 }
 
-function logOut(req, res) {
+function postLogOut(req, res) {
   req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return res.status(500).json({ message: "Logout failed" });
+    res.clearCookie("connect.sid");
+    res.json({ message: "Logged out" });
   });
 }
 
-async function getUserSignUp(req, res) {}
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.status(401).json({ message: "Unauthorized" });
+}
 
 module.exports = {
-  getLogIn,
-  logOut,
+  postLogOut,
   postLogIn,
-  getUserSignUp,
-  getAllUsers,
   createUser,
   getUserByUsername,
   updateUser,
