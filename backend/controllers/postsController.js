@@ -1,7 +1,25 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const jwt = require("jsonwebtoken");
 require("dotenv").config;
+
+async function getAllPosts(req, res) {
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: { createdAt: 'desc' }, 
+      include: {
+        author: {
+          select: { id: true, username: true, comments: true, createdAt: true },
+        },
+      },
+    });
+
+    res.status(200).json(posts);
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res.status(500).json({ message: "Failed to retrieve posts" });
+  }
+}
+
 
 async function createPost(req, res) {
   const post = await prisma.post.create({
@@ -18,13 +36,13 @@ async function createPost(req, res) {
 async function getPostById(req, res) {
   const post = await prisma.post.findUnique({
     where: {
-      id: req.body.id,
+      id: req.params.id,
     },
   });
 
   const comments = await prisma.post.findMany({
     where: {
-      postId: req.body.id,
+      postId: req.params.id,
     },
   });
 
@@ -32,12 +50,15 @@ async function getPostById(req, res) {
 }
 
 async function getPostsByUser(req, res) {
-  const posts = await prisma.post.findMany({
-    where: {
-      userId: req.body.id,
-    },
-  });
-  res.json(posts);
+  try {
+    const posts = await prisma.post.findMany({
+      where: { userId: req.params.username },
+      include: { comments: true },
+    });
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
 }
 
 async function updatePost(req, res) {
@@ -49,14 +70,9 @@ async function updatePost(req, res) {
     return res.status(404).json({ message: "Post not found" });
   }
 
-  // Only the original author or admin can edit
-  if (req.user.id !== post.authorId && req.user.role !== "admin") {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-  
   const updatedPost = await prisma.post.update({
     where: {
-      id: req.body.id,
+      id: req.params.id,
     },
     data: {
       title: title,
@@ -76,25 +92,8 @@ async function deletePost(req, res) {
   res.json(post);
 }
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) return res.sendStatus(401);
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-}
-
-function isAdmin(req, res, next) {
-  if (req.user.role !== "admin") {
-    return res.sendStatus(403);
-  }
-  next();
-}
-
 module.exports = {
+  getAllPosts,
   createPost,
   getPostById,
   getPostsByUser,
