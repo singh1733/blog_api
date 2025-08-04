@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-require("dotenv").config;
+require("dotenv").config();
 
 async function getAllPosts(req, res) {
   try {
@@ -27,7 +27,7 @@ async function createPost(req, res) {
       title: req.body.title,
       content: req.body.content,
       published: req.body.published || false,
-      userId: req.user.id,
+      username: req.user.username,
     },
   });
   res.json(post);
@@ -40,19 +40,14 @@ async function getPostById(req, res) {
     },
   });
 
-  const comments = await prisma.post.findMany({
-    where: {
-      postId: req.params.id,
-    },
-  });
 
-  res.json({ post, comments });
+  res.json({ post });
 }
 
 async function getPostsByUser(req, res) {
   try {
     const posts = await prisma.post.findMany({
-      where: { userId: req.params.username },
+      where: { username: req.params.username },
       include: { comments: true },
     });
     res.json(posts);
@@ -75,9 +70,9 @@ async function updatePost(req, res) {
       id: req.params.id,
     },
     data: {
-      title: title,
-      content: content,
-      published: published,
+      title: req.body.title,
+      content: req.body.content,
+      published: req.body.published,
     },
   });
   res.json(updatedPost);
@@ -86,7 +81,7 @@ async function updatePost(req, res) {
 async function deletePost(req, res) {
   const post = await prisma.post.delete({
     where: {
-      id: res.body.id,
+      id: res.params.id,
     },
   });
   res.json(post);

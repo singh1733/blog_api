@@ -9,3 +9,5 @@ postsRouter.get("/:postId", ensureAuthenticated, postsController.getPostById);
 postsRouter.get("/user/:username", ensureAuthenticated, postsController.getPostsByUser);
 postsRouter.put("/:postId", ensureAuthenticated, postsController.updatePost);
 postsRouter.delete("/:postId", ensureAuthenticated, postsController.deletePost);
+
+module.exports = postsRouter;
