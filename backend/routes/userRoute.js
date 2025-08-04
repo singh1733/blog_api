@@ -10,8 +10,8 @@ userRouter.post("/register", userController.createUser);
 userRouter.post("/login", userController.postLogIn);
 //userRouter.get("/log-in", userController.getLogIn);
 userRouter.post("/logout", userController.postLogOut);
-userRouter.delete("/:username",ensureAuthenticated,userController.deleteUser);
-userRouter.put("/:username",ensureAuthenticated,userController.updateUser);
+userRouter.delete("/:username/delete",ensureAuthenticated,userController.deleteUser);
+userRouter.put("/:username/update",ensureAuthenticated,userController.updateUser);
 
 module.exports=userRouter;
 

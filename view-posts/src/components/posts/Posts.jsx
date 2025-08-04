@@ -24,7 +24,7 @@ const Posts = () => {
               <h2>{post.title}</h2>
             </div>
             <p>{post.content}</p>
-            <Link to={`/posts/${post.id}`}>View Comments</Link>
+            <Link to={`/posts/${post.id}`}>View Post</Link>
           </li>
         ))}
       </ul>
