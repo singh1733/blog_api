@@ -8,7 +8,7 @@ import axios from "axios";
 import UserContext from "../userContext"; // adjust path if needed
 
 const User = () => {
-  const { usernameParam } = useParams(); // get postId from URL
+  const { username } = useParams(); // get username from URL
   const { user } = useContext(UserContext); // access the user object
   const [userPosts, setUserPosts] = useState([]);
 
@@ -38,7 +38,7 @@ const User = () => {
   return (
     <div>
       <h1>{user.username}'s Profile</h1>
-      {user?.username === usernameParam && (
+      {user?.username === username && (
         <>
           <Link to={`/user/${user.username}/update`}>Edit</Link>
           <Link to={`/user/${user.username}/delete`}>Delete</Link>

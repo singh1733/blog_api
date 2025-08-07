@@ -1,8 +1,10 @@
 import React from "react";
-import  { useEffect, useState } from "react";
+import { useEffect, useContext, useState } from "react";
+import UserContext from "../userContext";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
+  const { user } = useContext(UserContext); // access the user object
 
   useEffect(() => {
     fetch("http://localhost:3000/posts")
@@ -15,6 +17,9 @@ const Posts = () => {
 
   return (
     <div>
+      {user?.role === "admin" && (
+        <Link to="/posts/create">Create New Post</Link>
+      )}
       <h1>Posts</h1>
       <ul>
         {posts.map((post) => (
