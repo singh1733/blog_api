@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserContext from "../userContext";
 
-
-export default function Create() {
+export default function CreatePost() {
   const navigate = useNavigate();
   const { user } = useContext(UserContext); // access the user object
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     published: false,
-    username: user.username
+    username: user.username,
   });
 
   const [message, setMessage] = useState("");
@@ -25,24 +24,16 @@ export default function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {  
-      const res = await axios.post(
-        "http://localhost:4000/posts/create",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, 
-        }
-      );
-      if (res.ok) {
-        setMessage("Post created successfully!");
-        navigate("/posts");
-        setFormData({ title: "", content: "", published: false, username: "" }); // Reset form
-      } else {
-        setMessage(`${res.data.error || "Posting failed. Please try again."}`);
-      }
+    try {
+      await axios.post("http://localhost:4000/posts/create", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      setMessage("Post created successfully!");
+      navigate("/");
+      setFormData({ title: "", content: "", published: false, username: "" }); // Reset form
     } catch (err) {
       console.error(err);
       setMessage("An error occurred. Please try again later.");
@@ -74,7 +65,6 @@ export default function Create() {
         name="published"
         value={formData.published}
         onChange={handleChange}
-        required
       />
 
       <button type="submit">Create</button>

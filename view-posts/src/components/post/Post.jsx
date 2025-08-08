@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
-
 const Post = () => {
   const { postId } = useParams(); // get postId from URL
   const [post, setPost] = useState(null);
@@ -18,18 +17,26 @@ const Post = () => {
             withCredentials: true,
           }
         );
-        setPost(postRes.data);
+        setPost(postRes.data.post);
 
         // Fetch comments for that post
+       
+        
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+
+      try {
+        // Fetch comments for that post
         const commentsRes = await axios.get(
-          `http://localhost:4001/posts/${postId}/comments`,
+          `http://localhost:4000/posts/${postId}/comments`,
           {
             withCredentials: true,
           }
         );
         setComments(commentsRes.data);
       } catch (error) {
-        console.error("Error fetching post or comments:", error);
+        console.error("Error fetching comments:", error);
       }
     };
 
@@ -37,27 +44,34 @@ const Post = () => {
   }, [postId]);
 
   //add an edit and delete feature for admins
+    console.log(post)    
 
   return (
     <div>
-      <div>
-        <h3>{post.author}</h3>
-        <h2>{post.title}</h2>
-      </div>
-      <p>{post.content}</p>
+      {!post ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <div>
+            <h3>{post.username}</h3>
+            <h2>{post.title}</h2>
+          </div>
+          <p>{post.content}</p>
 
-      <hr />
-      <h3>Comments</h3>
-      {comments.length === 0 && <p>No comments yet.</p>}
-      <Link to={`/posts/${post.id}/comments/create`}>Leave a Comment</Link>
-      <ul>
-        {comments.map((comment) => (
-          <li key={comment.id}>
-            <h4>{comment.author}</h4>
-            <p>{comment.text}</p>
-          </li>
-        ))}
-      </ul>
+          <hr />
+          <h3>Comments</h3>
+          {comments.length === 0 && <p>No comments yet.</p>}
+          <Link to={`/posts/${post.id}/comments/create`}>Leave a Comment</Link>
+          <ul>
+            {comments.map((comment) => (
+              <li key={comment.id}>
+                <h4>{comment.username}</h4>
+                <p>{comment.text}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

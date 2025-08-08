@@ -14,9 +14,8 @@ async function createComment(req, res) {
 
 async function getCommentsByPost(req, res) {
   const comments = await prisma.comment.findMany({
-    where: {
-      postId: req.body.postId,
-    },
+    where: { postId: parseInt(req.params.postId) },
+
   });
   res.json(comments);
 }

@@ -11,7 +11,7 @@ const CreateComment = () => {
   const [formData, setFormData] = useState({
     content: "",
     username: user.username,
-    postId
+    postId,
   });
 
   const [message, setMessage] = useState("");
@@ -26,7 +26,7 @@ const CreateComment = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
+      await axios.post(
         `http://localhost:4000/posts/${postId}/comments/create`,
         formData,
         {
@@ -36,13 +36,10 @@ const CreateComment = () => {
           withCredentials: true, // Important if you're using sessions and cookies
         }
       );
-      if (res.ok) {
-        setMessage(" Comment created successfully!");
-        navigate(`/posts/${postId}/comments`);
-        setFormData({ content: "", username: "", postId: "" }); // Reset form
-      } else {
-        setMessage(`${res.data.error || "Comment creation failed. Please try again."}`);
-      }
+
+      setMessage(" Comment created successfully!");
+      navigate(`/posts/${postId}/comments`);
+      setFormData({ content: "", username: "", postId: "" }); // Reset form
     } catch (err) {
       console.error(err);
       setMessage("An error occurred. Please try again later.");
@@ -60,7 +57,7 @@ const CreateComment = () => {
         onChange={handleChange}
         required
       />
-      <button type="submit">Register</button>
+      <button type="submit">Comment</button>
       <p>{message}</p>
     </form>
   );

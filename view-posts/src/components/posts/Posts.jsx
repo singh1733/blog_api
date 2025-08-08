@@ -33,7 +33,6 @@ const Posts = () => {
 
   return (
     <div>
-      {console.log(user?.username)}
       {user?.role === "ADMIN" && (
         <Link to="/posts/create">Create New Post</Link>
       )}

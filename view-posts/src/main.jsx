@@ -9,6 +9,10 @@ import Posts from "./components/posts/Posts";
 import User from "./components/user/User";
 import Register from "./components/user/Register";
 import Login from "./components/user/Login";
+import CreatePost from "./components/posts/Create";
+import Post from "./components/post/Post";
+import CreateComment from "./components/post/CreateComment";
+
 
 import UserContext from "./components/userContext";
 
@@ -36,9 +40,15 @@ export default function Main() {
       children: [
         { path: "/", element: <Navigate to="/posts" /> },
         { path: "/posts", element: <Posts /> },
+        { path: "/posts/create", element: <CreatePost /> },
+        { path: "/posts/:postId", element: <Post /> },
+        { path: "/posts/:postId/comments/create", element: <CreateComment /> },
+
         { path: "/user", element: <User /> },
         { path: "/user/login", element: <Login /> },
         { path: "/user/register", element: <Register /> },
+
+
         
 
       ],

@@ -5,12 +5,7 @@ require("dotenv").config();
 async function getAllPosts(req, res) {
   try {
     const posts = await prisma.post.findMany({
-      orderBy: { createdAt: 'desc' }, 
-      include: {
-        author: {
-          select: { id: true, username: true, comments: true, createdAt: true },
-        },
-      },
+      orderBy: { createdAt: "desc" },
     });
 
     res.status(200).json(posts);
@@ -20,13 +15,12 @@ async function getAllPosts(req, res) {
   }
 }
 
-
 async function createPost(req, res) {
   const post = await prisma.post.create({
     data: {
       title: req.body.title,
       content: req.body.content,
-      published: req.body.published || false,
+      published: req.body.published === true,
       username: req.user.username,
     },
   });
@@ -35,11 +29,8 @@ async function createPost(req, res) {
 
 async function getPostById(req, res) {
   const post = await prisma.post.findUnique({
-    where: {
-      id: req.params.id,
-    },
+    where: { id: parseInt(req.params.postId) },
   });
-
 
   res.json({ post });
 }
@@ -80,9 +71,8 @@ async function updatePost(req, res) {
 
 async function deletePost(req, res) {
   const post = await prisma.post.delete({
-    where: {
-      id: res.params.id,
-    },
+    where: { id: parseInt(req.params.postId) },
+
   });
   res.json(post);
 }

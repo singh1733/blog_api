@@ -22,23 +22,15 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:4000/user/register",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true, // Important if you're using sessions and cookies
-        }
-      );
-      if (res.ok) {
-        setMessage("Registration successful! Please log in.");
-        navigate("/user/login");
-        setFormData({ username: "", email: "", password: "" }); // Reset form
-      } else {
-        setMessage(`${res.data.error || "Registration failed. Please try again."}`);
-      }
+      await axios.post("http://localhost:4000/user/register", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true, // Important if you're using sessions and cookies
+      });
+      setMessage("Registration successful! Please log in.");
+      navigate("/user/login");
+      setFormData({ username: "", email: "", password: "" }); // Reset form
     } catch (err) {
       console.error(err);
       setMessage("An error occurred. Please try again later.");
