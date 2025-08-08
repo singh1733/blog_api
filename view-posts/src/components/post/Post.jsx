@@ -13,7 +13,7 @@ const Post = () => {
       try {
         // Fetch single post data
         const postRes = await axios.get(
-          `http://localhost:3000/posts/${postId}`,
+          `http://localhost:4000/posts/${postId}`,
           {
             withCredentials: true,
           }
@@ -22,7 +22,7 @@ const Post = () => {
 
         // Fetch comments for that post
         const commentsRes = await axios.get(
-          `http://localhost:3001/posts/${postId}/comments`,
+          `http://localhost:4001/posts/${postId}/comments`,
           {
             withCredentials: true,
           }

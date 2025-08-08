@@ -36,13 +36,12 @@ const CreateComment = () => {
           withCredentials: true, // Important if you're using sessions and cookies
         }
       );
-      const data = await res.json();
       if (res.ok) {
         setMessage(" Comment created successfully!");
         navigate(`/posts/${postId}/comments`);
         setFormData({ content: "", username: "", postId: "" }); // Reset form
       } else {
-        setMessage(`${data.error || "Comment creation failed. Please try again."}`);
+        setMessage(`${res.data.error || "Comment creation failed. Please try again."}`);
       }
     } catch (err) {
       console.error(err);

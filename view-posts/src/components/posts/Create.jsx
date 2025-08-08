@@ -36,13 +36,12 @@ export default function Create() {
           withCredentials: true, 
         }
       );
-      const data = await res.json();
       if (res.ok) {
         setMessage("Post created successfully!");
         navigate("/posts");
         setFormData({ title: "", content: "", published: false, username: "" }); // Reset form
       } else {
-        setMessage(`${data.error || "Posting failed. Please try again."}`);
+        setMessage(`${res.data.error || "Posting failed. Please try again."}`);
       }
     } catch (err) {
       console.error(err);

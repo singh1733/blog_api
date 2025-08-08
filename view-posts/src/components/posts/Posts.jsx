@@ -1,23 +1,40 @@
 import React from "react";
 import { useEffect, useContext, useState } from "react";
 import UserContext from "../userContext";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const { user } = useContext(UserContext); // access the user object
 
   useEffect(() => {
-    fetch("http://localhost:3000/posts")
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((err) => console.error("Failed to fetch posts:", err));
+    const fetchPosts = async () => {
+      try {
+        // Fetch single post data
+        const postRes = await axios.get(
+          `http://localhost:4000/posts`,
+          {
+            withCredentials: true,
+          }
+        );
+        setPosts(postRes.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
   //add an edit and delete feature for admins
 
   return (
     <div>
-      {user?.role === "admin" && (
+      {console.log(user?.username)}
+      {user?.role === "ADMIN" && (
         <Link to="/posts/create">Create New Post</Link>
       )}
       <h1>Posts</h1>

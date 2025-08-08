@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import Nav from "./components/nav/Nav";
 import Posts from "./components/posts/Posts";
 import User from "./components/user/User";
@@ -17,18 +16,18 @@ import UserContext from "./components/userContext";
 export default function Main() {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser(decoded);
-      } catch (err) {
-        console.error("Invalid token");
-        localStorage.removeItem("token");
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   if (token) {
+  //     try {
+  //       const decoded = jwtDecode(token);
+  //       setUser(decoded);
+  //     } catch (err) {
+  //       console.error("Invalid token");
+  //       localStorage.removeItem("token");
+  //     }
+  //   }
+  // }, []);
 
   const router = createBrowserRouter([
     {

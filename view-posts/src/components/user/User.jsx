@@ -17,7 +17,7 @@ const User = () => {
       const fetchUserPosts = async () => {
         try {
           const PostResp = await axios.get(
-            "http://localhost:3000/posts/user/" + user.username,
+            "http://localhost:4000/posts/user/" + user.username,
             {
               withCredentials: true,
             }

@@ -32,13 +32,12 @@ const Register = () => {
           withCredentials: true, // Important if you're using sessions and cookies
         }
       );
-      const data = await res.json();
       if (res.ok) {
         setMessage("Registration successful! Please log in.");
         navigate("/user/login");
         setFormData({ username: "", email: "", password: "" }); // Reset form
       } else {
-        setMessage(`${data.error || "Registration failed. Please try again."}`);
+        setMessage(`${res.data.error || "Registration failed. Please try again."}`);
       }
     } catch (err) {
       console.error(err);

@@ -28,11 +28,9 @@ app.use(cors({
 }));
 const userRoute = require("./routes/userRoute");
 const postRoute = require("./routes/postsRoute");
-const commentRoute = require("./routes/commentRoute");
 
 //render home page
 
-app.use("/posts/:postId/comments", commentRoute);
 app.use("/posts", postRoute);
 app.use("/user", userRoute);
 
