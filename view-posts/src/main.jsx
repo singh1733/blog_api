@@ -40,6 +40,7 @@ export default function Main() {
         { path: "/user", element: <User /> },
         { path: "/user/login", element: <Login /> },
         { path: "/user/register", element: <Register /> },
+        
 
       ],
     },

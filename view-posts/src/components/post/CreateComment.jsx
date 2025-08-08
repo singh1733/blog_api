@@ -2,16 +2,16 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserContext from "../userContext";
+import { useParams } from "react-router-dom";
 
-
-export default function Create() {
+const CreateComment = () => {
   const navigate = useNavigate();
+  const { postId } = useParams();
   const { user } = useContext(UserContext); // access the user object
   const [formData, setFormData] = useState({
-    title: "",
     content: "",
-    published: false,
-    username: user.username
+    username: user.username,
+    postId
   });
 
   const [message, setMessage] = useState("");
@@ -25,24 +25,24 @@ export default function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {  
+    try {
       const res = await axios.post(
-        "http://localhost:4000/posts/create",
+        `http://localhost:4000/posts/${postId}/comments/create`,
         formData,
         {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, 
+          withCredentials: true, // Important if you're using sessions and cookies
         }
       );
       const data = await res.json();
       if (res.ok) {
-        setMessage("Post created successfully!");
-        navigate("/posts");
-        setFormData({ title: "", content: "", published: false, username: "" }); // Reset form
+        setMessage(" Comment created successfully!");
+        navigate(`/posts/${postId}/comments`);
+        setFormData({ content: "", username: "", postId: "" }); // Reset form
       } else {
-        setMessage(`${data.error || "Posting failed. Please try again."}`);
+        setMessage(`${data.error || "Comment creation failed. Please try again."}`);
       }
     } catch (err) {
       console.error(err);
@@ -52,15 +52,7 @@ export default function Create() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Create Post</h2>
-      <label>Title:</label>
-      <input
-        type="text"
-        name="title"
-        value={formData.title}
-        onChange={handleChange}
-        required
-      />
+      <h2>Create Comment</h2>
       <label>Content:</label>
       <input
         type="text"
@@ -69,17 +61,10 @@ export default function Create() {
         onChange={handleChange}
         required
       />
-      <label>Draft:</label>
-      <input
-        type="checkbox"
-        name="published"
-        value={formData.published}
-        onChange={handleChange}
-        required
-      />
-
-      <button type="submit">Create</button>
+      <button type="submit">Register</button>
       <p>{message}</p>
     </form>
   );
-}
+};
+
+export default CreateComment;

@@ -12,35 +12,26 @@ async function createComment(req, res) {
   res.json(comment);
 }
 
-async function getCommentById(req, res) {
-  const comment = await prisma.comment.findUnique({
-    where: {
-      id: req.body.id,
-    },
-  });
-  res.json(comment);
-}
-
-async function getCommentsByUser(req, res) {
+async function getCommentsByPost(req, res) {
   const comments = await prisma.comment.findMany({
     where: {
-      userId: req.body.id,
+      postId: req.body.postId,
     },
   });
   res.json(comments);
 }
 
-async function updateComment(req, res) {
-  const comment = await prisma.comment.update({
-    where: {
-      id: req.body.id,
-    },
-    data: {
-      content: content,
-    },
-  });
-  res.json(comment);
-}
+// async function updateComment(req, res) {
+//   const comment = await prisma.comment.update({
+//     where: {
+//       id: req.body.id,
+//     },
+//     data: {
+//       content: content,
+//     },
+//   });
+//   res.json(comment);
+// }
 
 async function deleteComment(req, res) {
   const comment = await prisma.comment.delete({
@@ -53,8 +44,6 @@ async function deleteComment(req, res) {
 
 module.exports = {
   createComment,
-  getCommentById,
-  getCommentsByUser,
-  updateComment,
+  getCommentsByPost,
   deleteComment,
 };
