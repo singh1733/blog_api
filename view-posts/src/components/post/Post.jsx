@@ -44,7 +44,6 @@ const Post = () => {
   }, [postId]);
 
   //add an edit and delete feature for admins
-    console.log(post)    
 
   return (
     <div>
@@ -66,7 +65,7 @@ const Post = () => {
             {comments.map((comment) => (
               <li key={comment.id}>
                 <h4>{comment.username}</h4>
-                <p>{comment.text}</p>
+                <p>{comment.content}</p>
               </li>
             ))}
           </ul>

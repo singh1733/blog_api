@@ -38,7 +38,7 @@ const CreateComment = () => {
       );
 
       setMessage(" Comment created successfully!");
-      navigate(`/posts/${postId}/comments`);
+      navigate(`/posts/${postId}`);
       setFormData({ content: "", username: "", postId: "" }); // Reset form
     } catch (err) {
       console.error(err);

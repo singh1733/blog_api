@@ -4,9 +4,9 @@ const prisma = new PrismaClient();
 async function createComment(req, res) {
   const comment = await prisma.comment.create({
     data: {
-      content: content,
-      userId: req.body.userId,
-      postId: req.body.postId,
+      content: req.body.content,
+      username: req.user.username,
+      postId: parseInt(req.params.postId),
     },
   });
   res.json(comment);
@@ -35,7 +35,7 @@ async function getCommentsByPost(req, res) {
 async function deleteComment(req, res) {
   const comment = await prisma.comment.delete({
     where: {
-      id: res.body.id,
+      id: parseInt(res.body.id),
     },
   });
   res.json(comment);
