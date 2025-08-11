@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import UserContext from "../userContext"; // adjust path if needed
+import UserContext from "../userContext";
+import Delete from "./Delete";
 
 const Post = () => {
   const { postId } = useParams(); // get postId from URL
@@ -55,7 +56,7 @@ const Post = () => {
             {post.username == user?.username && (
               <>
                 <Link to={`/posts/${post.id}/edit`}>Edit</Link>
-                <Link to={`/posts/${post.id}/delete`}>Delete</Link>
+                <Delete username={post.username}/>
               </>
             )}
             <h3>{post.username}</h3>

@@ -16,16 +16,33 @@ const User = () => {
 
   useEffect(() => {
     const fetchUserPosts = async () => {
-      try {
-        const PostResp = await axios.get(
-          "http://localhost:4000/posts/user/" + username,
-          {
-            withCredentials: true,
-          }
-        );
-        setUserPosts(PostResp.data);
-      } catch (error) {
-        console.error("Error fetching user posts:", error);
+      if (user?.username === username) {
+        try {
+          const PostResp = await axios.get(
+            "http://localhost:4000/posts/user/" + username,
+            {
+              withCredentials: true,
+            }
+          );
+          setUserPosts(PostResp.data);
+        } catch (error) {
+          console.error("Error fetching user posts:", error);
+        }
+      } else {
+        try {
+          const PostResp = await axios.get(
+            "http://localhost:4000/posts/user/" + username,
+            {
+              withCredentials: true,
+              params: {
+                published: true,
+              },
+            }
+          );
+          setUserPosts(PostResp.data);
+        } catch (error) {
+          console.error("Error fetching user posts:", error);
+        }
       }
     };
 
@@ -37,9 +54,9 @@ const User = () => {
       <h1>{username}'s Profile</h1>
       {user?.username === username && (
         <>
-          <Logout username={user.username}/>
+          <Logout username={user.username} />
           <Link to={`/user/${user.username}/edit`}>Edit</Link>
-          <Delete username={user.username}/>
+          <Delete username={user.username} />
         </>
       )}
       <h2>{username}'s Posts</h2>

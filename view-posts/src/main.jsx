@@ -9,9 +9,11 @@ import Posts from "./components/posts/Posts";
 import User from "./components/user/User";
 import Register from "./components/user/Register";
 import Login from "./components/user/Login";
-import Edit from "./components/user/Edit";
+import EditUser from "./components/user/Edit";
 import CreatePost from "./components/posts/Create";
 import Post from "./components/post/Post";
+import EditPost from "./components/post/Edit";
+
 import CreateComment from "./components/post/CreateComment";
 
 
@@ -44,11 +46,13 @@ export default function Main() {
         { path: "/posts/create", element: <CreatePost /> },
         { path: "/posts/:postId", element: <Post /> },
         { path: "/posts/:postId/comments/create", element: <CreateComment /> },
+        { path: "/posts/:postId/edit", element: <EditPost /> },
+
 
         { path: "/user/:username", element: <User /> },
         { path: "/user/login", element: <Login /> },
         { path: "/user/register", element: <Register /> },
-        { path: "/user/:username/edit", element: <Edit /> },
+        { path: "/user/:username/edit", element: <EditUser /> },
 
 
 

@@ -57,6 +57,7 @@ export default function EditUser() {
         <label>
           Username:
           <input
+            type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
@@ -64,7 +65,12 @@ export default function EditUser() {
         </label>
         <label>
           Email:
-          <input name="email" value={formData.email} onChange={handleChange} />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+          />
         </label>
         <button type="submit">Save Changes</button>
       </form>

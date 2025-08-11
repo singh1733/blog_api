@@ -4,7 +4,14 @@ require("dotenv").config();
 
 async function getAllPosts(req, res) {
   try {
+    const { published } = req.query;
+
+    // Build a filter object only if published is specified
+    const filter =
+      published !== undefined ? { published: published === "true" } : {};
+
     const posts = await prisma.post.findMany({
+      where: filter,
       orderBy: { createdAt: "desc" },
     });
 
@@ -37,8 +44,14 @@ async function getPostById(req, res) {
 
 async function getPostsByUser(req, res) {
   try {
+    const { published } = req.query;
+
+    // Build a filter object only if published is specified
+    const filter =
+      published !== undefined ? { published: published === "true" } : {};
+
     const posts = await prisma.post.findMany({
-      where: { username: req.params.username },
+      where: { username: req.params.username, ...filter },
       include: { comments: true },
       orderBy: { createdAt: "desc" },
     });
@@ -49,17 +62,9 @@ async function getPostsByUser(req, res) {
 }
 
 async function editPost(req, res) {
-  const post = await prisma.post.findUnique({
-    where: { id: parseInt(req.params.id) },
-  });
-
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-
   const updatedPost = await prisma.post.update({
     where: {
-      id: req.params.id,
+      id: parseInt(req.params.postId),
     },
     data: {
       title: req.body.title,

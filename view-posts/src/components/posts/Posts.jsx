@@ -18,6 +18,10 @@ const Posts = () => {
           `http://localhost:4000/posts`,
           {
             withCredentials: true,
+            params: {
+              published: true,       
+            }
+
           }
         );
         setPosts(postRes.data);
