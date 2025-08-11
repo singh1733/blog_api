@@ -4,6 +4,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import Delete from "./Delete";
+import Logout from "./Logout";
 
 import UserContext from "../userContext"; // adjust path if needed
 
@@ -35,9 +37,9 @@ const User = () => {
       <h1>{username}'s Profile</h1>
       {user?.username === username && (
         <>
-          <Link to={`/user/${user.username}/logout`}>Log Out</Link>
+          <Logout username={user.username}/>
           <Link to={`/user/${user.username}/edit`}>Edit</Link>
-          <Link to={`/user/${user.username}/delete`}>Delete</Link>
+          <Delete username={user.username}/>
         </>
       )}
       <h2>{username}'s Posts</h2>
