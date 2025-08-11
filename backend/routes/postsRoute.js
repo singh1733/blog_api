@@ -7,9 +7,9 @@ const { ensureAuthenticated } = require("../middleware/authMiddleware");
 postsRouter.get("/", postsController.getAllPosts);
 postsRouter.post("/create", ensureAuthenticated, postsController.createPost);
 postsRouter.get("/:postId", postsController.getPostById);
-postsRouter.get("/user/:username", ensureAuthenticated, postsController.getPostsByUser);
-postsRouter.put("/:postId", ensureAuthenticated, postsController.updatePost);
-postsRouter.delete("/:postId", ensureAuthenticated, postsController.deletePost);
+postsRouter.get("/user/:username", postsController.getPostsByUser);
+postsRouter.put("/:postId/edit", ensureAuthenticated, postsController.editPost);
+postsRouter.delete("/:postId/delete", ensureAuthenticated, postsController.deletePost);
 //comments routes
 postsRouter.get("/:postId/comments", commentsController.getCommentsByPost);
 postsRouter.post("/:postId/comments/create", ensureAuthenticated, commentsController.createComment);

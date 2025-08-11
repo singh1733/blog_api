@@ -15,7 +15,12 @@ function postLogIn(req, res, next) {
       if (err) return next(err);
       return res.json({
         message: "Logged in successfully",
-        user: { id: user.id, username: user.username, role: user.role },
+        user: {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          email: user.email,
+        },
       });
     });
   })(req, res, next);
@@ -28,7 +33,7 @@ async function createUser(req, res) {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { username } });
     const existingEmail = await prisma.user.findUnique({ where: { email } });
-    if (existingUser||existingEmail) {
+    if (existingUser || existingEmail) {
       return res.status(400).json({ error: "Username or Email already taken" });
     }
 
@@ -64,26 +69,44 @@ async function getUserByUsername(req, res) {
     return res.status(404).json({ error: "User not found" });
   }
   const { password, ...safeUser } = user; //do not return password in response
-  res.json(safeUser); 
+  res.json(safeUser);
 }
 
-async function updateUser(req, res) {
+async function editUser(req, res) {
+  const loggedInUser = req.user.username;
+  const userToEdit = req.params.username;
+
+  // Only allow if logged-in user matches the user being edited
+  if (loggedInUser !== userToEdit) {
+    return res
+      .status(403)
+      .json({ error: "Forbidden: You can't edit another user's account" });
+  }
+
   const user = await prisma.user.update({
     where: {
-      username: req.param.username,
+      username: req.params.username,
     },
     data: {
       email: req.body.email,
       username: req.body.username,
-      password: await bcrypt.hash(req.body.password, 10),
+      //password: await bcrypt.hash(req.body.password, 10),
     },
   });
-  res.json(user);
+
+  return res.json({
+    user: {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+      email: user.email,
+    },
+  });
 }
 
 async function deleteUser(req, res) {
   const user = await prisma.user.delete({
-    where: { username: req.param.username },
+    where: { username: req.params.username },
   });
   res.json(user);
 }
@@ -101,6 +124,6 @@ module.exports = {
   postLogIn,
   createUser,
   getUserByUsername,
-  updateUser,
+  editUser,
   deleteUser,
 };

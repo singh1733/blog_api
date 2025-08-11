@@ -5,13 +5,13 @@ const { ensureAuthenticated } = require("../middleware/authMiddleware");
 
 
 //userRouter.get("/register", userController.getUserSignUp);
-userRouter.get("/:username",ensureAuthenticated, userController.getUserByUsername);
+userRouter.get("/:username", userController.getUserByUsername);
 userRouter.post("/register", userController.createUser);
 userRouter.post("/login", userController.postLogIn);
 //userRouter.get("/log-in", userController.getLogIn);
 userRouter.post("/logout", userController.postLogOut);
 userRouter.delete("/:username/delete",ensureAuthenticated,userController.deleteUser);
-userRouter.put("/:username/update",ensureAuthenticated,userController.updateUser);
+userRouter.put("/:username/edit",ensureAuthenticated,userController.editUser);
 
 module.exports=userRouter;
 

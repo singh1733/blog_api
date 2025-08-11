@@ -13,38 +13,34 @@ const User = () => {
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
-    if (user?.username) {
-      const fetchUserPosts = async () => {
-        try {
-          const PostResp = await axios.get(
-            "http://localhost:4000/posts/user/" + user.username,
-            {
-              withCredentials: true,
-            }
-          );
-          [...PostResp.data].sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          );
-          setUserPosts(PostResp.data);
-        } catch (error) {
-          console.error("Error fetching user posts:", error);
-        }
-      };
+    const fetchUserPosts = async () => {
+      try {
+        const PostResp = await axios.get(
+          "http://localhost:4000/posts/user/" + username,
+          {
+            withCredentials: true,
+          }
+        );
+        setUserPosts(PostResp.data);
+      } catch (error) {
+        console.error("Error fetching user posts:", error);
+      }
+    };
 
-      fetchUserPosts();
-    }
-  }, [user]); //do i need to use useEffect?
+    fetchUserPosts();
+  }, [username]); //do i need to use useEffect?
 
   return (
     <div>
-      <h1>{user.username}'s Profile</h1>
+      <h1>{username}'s Profile</h1>
       {user?.username === username && (
         <>
-          <Link to={`/user/${user.username}/update`}>Edit</Link>
+          <Link to={`/user/${user.username}/logout`}>Log Out</Link>
+          <Link to={`/user/${user.username}/edit`}>Edit</Link>
           <Link to={`/user/${user.username}/delete`}>Delete</Link>
         </>
       )}
-      <h2>Your Posts</h2>
+      <h2>{username}'s Posts</h2>
       <ul>
         {userPosts.map((post) => (
           <li key={post.id}>

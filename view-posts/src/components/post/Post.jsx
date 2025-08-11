@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
+import UserContext from "../userContext"; // adjust path if needed
 
 const Post = () => {
   const { postId } = useParams(); // get postId from URL
+  const { user } = useContext(UserContext); // access the user object
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
 
@@ -20,8 +22,6 @@ const Post = () => {
         setPost(postRes.data.post);
 
         // Fetch comments for that post
-       
-        
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -52,6 +52,12 @@ const Post = () => {
       ) : (
         <>
           <div>
+            {post.username == user?.username && (
+              <>
+                <Link to={`/posts/${post.id}/edit`}>Edit</Link>
+                <Link to={`/posts/${post.id}/delete`}>Delete</Link>
+              </>
+            )}
             <h3>{post.username}</h3>
             <h2>{post.title}</h2>
           </div>

@@ -40,6 +40,7 @@ async function getPostsByUser(req, res) {
     const posts = await prisma.post.findMany({
       where: { username: req.params.username },
       include: { comments: true },
+      orderBy: { createdAt: "desc" },
     });
     res.json(posts);
   } catch (err) {
@@ -47,7 +48,7 @@ async function getPostsByUser(req, res) {
   }
 }
 
-async function updatePost(req, res) {
+async function editPost(req, res) {
   const post = await prisma.post.findUnique({
     where: { id: parseInt(req.params.id) },
   });
@@ -72,7 +73,6 @@ async function updatePost(req, res) {
 async function deletePost(req, res) {
   const post = await prisma.post.delete({
     where: { id: parseInt(req.params.postId) },
-
   });
   res.json(post);
 }
@@ -82,6 +82,6 @@ module.exports = {
   createPost,
   getPostById,
   getPostsByUser,
-  updatePost,
+  editPost,
   deletePost,
 };
