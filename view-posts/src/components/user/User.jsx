@@ -1,5 +1,3 @@
-//display the user's posts and comments
-//if the user is the author, allow them to edit or delete their posts
 
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -7,11 +5,10 @@ import axios from "axios";
 import Delete from "./Delete";
 import Logout from "./Logout";
 
-import UserContext from "../userContext"; // adjust path if needed
-
+import UserContext from "../userContext"; 
 const User = () => {
   const { username } = useParams(); // get username from URL
-  const { user } = useContext(UserContext); // access the user object
+  const { user } = useContext(UserContext);
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {

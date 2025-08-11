@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 const CreateComment = () => {
   const navigate = useNavigate();
   const { postId } = useParams();
-  const { user } = useContext(UserContext); // access the user object
+  const { user } = useContext(UserContext);
   const [formData, setFormData] = useState({
     content: "",
     username: user.username,
@@ -33,7 +33,7 @@ const CreateComment = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true, // Important if you're using sessions and cookies
+          withCredentials: true, // using sessions and cookies
         }
       );
 

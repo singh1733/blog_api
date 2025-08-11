@@ -19,7 +19,6 @@ function initialize(passport) {
     })
   );
 
-  // Required for sessions
   passport.serializeUser((user, done) => {
     done(null, user.id); // Store user ID in session
   });

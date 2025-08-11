@@ -5,7 +5,7 @@ import UserContext from "../userContext";
 
 export default function CreatePost() {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext); // access the user object
+  const { user } = useContext(UserContext);  
   const [formData, setFormData] = useState({
     title: "",
     content: "",

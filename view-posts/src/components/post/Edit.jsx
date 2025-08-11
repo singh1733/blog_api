@@ -19,7 +19,6 @@ export default function EditUser() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        // Fetch single post data
         const postRes = await axios.get(
           `http://localhost:4000/posts/${postId}`,
           {
@@ -33,7 +32,6 @@ export default function EditUser() {
           published: postRes.data.post.published,
         });
 
-        // Fetch comments for that post
       } catch (error) {
         console.error("Error fetching post:", error);
       }

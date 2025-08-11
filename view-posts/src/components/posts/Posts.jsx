@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  const { user } = useContext(UserContext); // access the user object
+  const { user } = useContext(UserContext); 
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -32,8 +32,6 @@ const Posts = () => {
 
     fetchPosts();
   }, []);
-
-  //add an edit and delete feature for admins
 
   return (
     <div>

@@ -26,7 +26,7 @@ const Register = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        withCredentials: true, // Important if you're using sessions and cookies
+        withCredentials: true, //  using sessions and cookies
       });
       setMessage("Registration successful! Please log in.");
       navigate("/user/login");

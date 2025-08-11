@@ -22,10 +22,8 @@ export default function Login() {
         { withCredentials: true }
       );
 
-      console.log("Login response:", res.data);
       const loggedInUser = res.data.user;
       setUser(loggedInUser);
-      console.log("User set in context:", loggedInUser);
       navigate("/");
     } catch (err) {
       console.error("Login failed", err);

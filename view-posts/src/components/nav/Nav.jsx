@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Link, Outlet } from "react-router-dom";
-import UserContext from "../userContext"; // adjust path if needed
+import UserContext from "../userContext"; 
 
 const Nav = () => {
-  const { user } = useContext(UserContext); // access the user object
+  const { user } = useContext(UserContext);
 
   return (
     <>

@@ -6,7 +6,7 @@ import Delete from "./Delete";
 
 const Post = () => {
   const { postId } = useParams(); // get postId from URL
-  const { user } = useContext(UserContext); // access the user object
+  const { user } = useContext(UserContext); 
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
 
@@ -44,7 +44,6 @@ const Post = () => {
     fetchPostAndComments();
   }, [postId]);
 
-  //add an edit and delete feature for admins
 
   return (
     <div>
