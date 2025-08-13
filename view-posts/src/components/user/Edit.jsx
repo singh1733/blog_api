@@ -30,12 +30,20 @@ export default function EditUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to edit your profile.");
+      return;
+    }
     try {
       const res = await axios.put(
         `http://localhost:4000/user/${user.username}/edit`,
         formData,
         {
-          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       setUser(res.data.user);

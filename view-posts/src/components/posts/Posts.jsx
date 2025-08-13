@@ -17,7 +17,6 @@ const Posts = () => {
         const postRes = await axios.get(
           `http://localhost:4000/posts`,
           {
-            withCredentials: true,
             params: {
               published: true,       
             }

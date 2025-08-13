@@ -6,18 +6,25 @@ import Delete from "./Delete";
 
 const Post = () => {
   const { postId } = useParams(); // get postId from URL
-  const { user } = useContext(UserContext); 
+  const { user } = useContext(UserContext);
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
     const fetchPostAndComments = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You must be logged in to delete a post.");
+        return;
+      }
       try {
         // Fetch single post data
         const postRes = await axios.get(
           `http://localhost:4000/posts/${postId}`,
           {
-            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
         setPost(postRes.data.post);
@@ -31,9 +38,7 @@ const Post = () => {
         // Fetch comments for that post
         const commentsRes = await axios.get(
           `http://localhost:4000/posts/${postId}/comments`,
-          {
-            withCredentials: true,
-          }
+          {}
         );
         setComments(commentsRes.data);
       } catch (error) {
@@ -43,7 +48,6 @@ const Post = () => {
 
     fetchPostAndComments();
   }, [postId]);
-
 
   return (
     <div>
@@ -55,7 +59,7 @@ const Post = () => {
             {post.username == user?.username && (
               <>
                 <Link to={`/posts/${post.id}/edit`}>Edit</Link>
-                <Delete username={post.username}/>
+                <Delete username={post.username} />
               </>
             )}
             <h3>{post.username}</h3>

@@ -21,9 +21,7 @@ export default function EditUser() {
       try {
         const postRes = await axios.get(
           `http://localhost:4000/posts/${postId}`,
-          {
-            withCredentials: true,
-          }
+          {}
         );
         setFormData({
           username: postRes.data.post.username,
@@ -31,7 +29,6 @@ export default function EditUser() {
           content: postRes.data.post.content,
           published: postRes.data.post.published,
         });
-
       } catch (error) {
         console.error("Error fetching post:", error);
       }
@@ -44,16 +41,23 @@ export default function EditUser() {
     if (e.target.name === "published") {
       setFormData((prev) => ({
         ...prev,
-        published: e.target.checked
+        published: e.target.checked,
       }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to delete a post.");
+      return;
+    }
     try {
       await axios.put(`http://localhost:4000/posts/${postId}/edit`, formData, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       navigate(`/`);
     } catch (err) {

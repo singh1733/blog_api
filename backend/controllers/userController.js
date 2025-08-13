@@ -2,18 +2,28 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
+const JWT_SECRET = process.env.JWT_SECRET || "meow";
+
 function postLogIn(req, res, next) {
-  passport.authenticate("local", { session: true }, (err, user, info) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err || !user) {
       return res.status(400).json({ message: "Login failed" });
     }
 
-    req.login(user, (err) => {
-      if (err) return next(err);
+    const payload = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+
       return res.json({
+        token,
         message: "Logged in successfully",
         user: {
           id: user.id,
@@ -22,7 +32,7 @@ function postLogIn(req, res, next) {
           email: user.email,
         },
       });
-    });
+    
   })(req, res, next);
 }
 

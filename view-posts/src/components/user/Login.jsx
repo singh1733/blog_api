@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import axios from "axios";
 import UserContext from "../userContext";
+import {jwtDecode} from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -19,11 +20,11 @@ export default function Login() {
           username,
           password,
         },
-        { withCredentials: true }
       );
 
-      const loggedInUser = res.data.user;
-      setUser(loggedInUser);
+      //const loggedInUser = res.data.user;
+      localStorage.setItem("token", res.data.token);
+      setUser(jwtDecode(res.data.token)); 
       navigate("/");
     } catch (err) {
       console.error("Login failed", err);
@@ -36,13 +37,15 @@ export default function Login() {
       <form onSubmit={handleLogin}>
         <input
           type="text"
-          placeholder="username"
+          name="username"
+          autoComplete="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="password"
-          placeholder="password"
+          name="password"
+          autoComplete="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
 import Nav from "./components/nav/Nav";
+import {jwtDecode} from "jwt-decode";
 import Posts from "./components/posts/Posts";
 import User from "./components/user/User";
 import Register from "./components/user/Register";
@@ -16,12 +17,28 @@ import EditPost from "./components/post/Edit";
 
 import CreateComment from "./components/post/CreateComment";
 
-
 import UserContext from "./components/userContext";
-
 
 export default function Main() {
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+
+        if (decoded.exp * 1000 > Date.now()) {
+          setUser(decoded);
+        } else {
+          localStorage.removeItem("token");
+        }
+      } catch (err) {
+        console.error("Invalid token", err);
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
 
   const router = createBrowserRouter([
     {
@@ -35,16 +52,10 @@ export default function Main() {
         { path: "/posts/:postId/comments/create", element: <CreateComment /> },
         { path: "/posts/:postId/edit", element: <EditPost /> },
 
-
         { path: "/user/:username", element: <User /> },
         { path: "/user/login", element: <Login /> },
         { path: "/user/register", element: <Register /> },
         { path: "/user/:username/edit", element: <EditUser /> },
-
-
-
-        
-
       ],
     },
   ]);

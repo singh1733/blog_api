@@ -15,9 +15,17 @@ export default function Delete({ username }) {
     if (!window.confirm("Are you sure you want to delete this account?"))
       return;
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to delete your account.");
+      return;
+    }
+
     try {
       await axios.delete(`http://localhost:4000/user/${username}/delete`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       alert("User deleted successfully");
       setUser(null);
@@ -28,9 +36,5 @@ export default function Delete({ username }) {
     }
   };
 
-  return (
-    <button onClick={handleDelete} >
-      Delete Account
-    </button>
-  );
+  return <button onClick={handleDelete}>Delete Account</button>;
 }

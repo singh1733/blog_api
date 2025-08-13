@@ -5,12 +5,12 @@ import UserContext from "../userContext";
 
 export default function CreatePost() {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);  
+  const { user } = useContext(UserContext);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     published: false,
-    username: user.username,
+    username: user ? user.username : "",
   });
 
   const [message, setMessage] = useState("");
@@ -24,12 +24,17 @@ export default function CreatePost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setMessage("You must be logged in to create a post.");
+      return;
+    }
     try {
       await axios.post("http://localhost:4000/posts/create", formData, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        withCredentials: true,
       });
       setMessage("Post created successfully!");
       navigate("/");

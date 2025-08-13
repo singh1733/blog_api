@@ -15,9 +15,17 @@ export default function Delete({ username }) {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this post?")) return;
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to delete a post.");
+      return;
+    }
+
     try {
       await axios.delete(`http://localhost:4000/posts/${postId}/delete`, {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       alert("Post deleted successfully");
       navigate("/");

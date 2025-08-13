@@ -1,11 +1,10 @@
-
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import Delete from "./Delete";
 import Logout from "./Logout";
 
-import UserContext from "../userContext"; 
+import UserContext from "../userContext";
 const User = () => {
   const { username } = useParams(); // get username from URL
   const { user } = useContext(UserContext);
@@ -17,9 +16,6 @@ const User = () => {
         try {
           const PostResp = await axios.get(
             "http://localhost:4000/posts/user/" + username,
-            {
-              withCredentials: true,
-            }
           );
           setUserPosts(PostResp.data);
         } catch (error) {
@@ -30,7 +26,6 @@ const User = () => {
           const PostResp = await axios.get(
             "http://localhost:4000/posts/user/" + username,
             {
-              withCredentials: true,
               params: {
                 published: true,
               },

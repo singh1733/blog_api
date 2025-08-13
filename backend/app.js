@@ -1,5 +1,5 @@
 const express = require("express");
-const session = require("express-session");
+
 require("dotenv").config();
 const passport = require("passport");
 require("./passport-config")(passport);
@@ -7,16 +7,7 @@ require("./passport-config")(passport);
 const cors = require("cors");
 
 const app = express();
-app.use(
-  session({
-    secret: "cats",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }, // set to true if using HTTPS
-  })
-);
 app.use(passport.initialize());
-app.use(passport.session());
 
 
 app.use(express.urlencoded({ extended: true }));

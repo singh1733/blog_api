@@ -25,6 +25,12 @@ const CreateComment = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setMessage("You must be logged in to create a post.");
+      return;
+    }
+
     try {
       await axios.post(
         `http://localhost:4000/posts/${postId}/comments/create`,
@@ -32,8 +38,8 @@ const CreateComment = () => {
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          withCredentials: true, // using sessions and cookies
         }
       );
 
